@@ -385,32 +385,18 @@
       
         
           
-            <h2 id="Sequelize简介"><a href="#Sequelize简介" class="headerlink" title="Sequelize简介"></a>Sequelize简介</h2><blockquote>
-<p> Sequelize是一款基于Nodejs功能强大的异步ORM框架。</p>
-<p> ORM：Object-Relational Mapping，把关系数据库的表结构映射到对象上，通过面向对象的方式操作数据库</p>
-<p> 同时支持PostgreSQL, MySQL, SQLite and MSSQL多种数据库 </p>
-</blockquote>
-<p>再进行nodejs开发时，使用Sequelize比较频繁，为了防止忘记，方便复习，做一下备忘录</p>
-<h2 id="Sequelize连接mysql"><a href="#Sequelize连接mysql" class="headerlink" title="Sequelize连接mysql"></a>Sequelize连接mysql</h2><h3 id="安装依赖模块"><a href="#安装依赖模块" class="headerlink" title="安装依赖模块"></a>安装依赖模块</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install mysql2 --save	&#x2F;&#x2F;sequelize依赖于mysql2</span><br><span class="line">npm install sequelize --save</span><br></pre></td></tr></table></figure>
-
-<h3 id="创建一个Sequelize实例对象"><a href="#创建一个Sequelize实例对象" class="headerlink" title="创建一个Sequelize实例对象"></a>创建一个Sequelize实例对象</h3><p>创建一个Sequelize实例连接MySQL数据库</p>
-<ul>
-<li>第一个参数：数据库名</li>
-<li>第二个参数：用户名</li>
-<li>第三个参数：密码</li>
-<li>第四个参数：配置</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> db = <span class="keyword">new</span> Sequelize(<span class="string">'test'</span>, <span class="string">'root'</span>, <span class="string">'123456'</span>, &#123;</span><br><span class="line">    dialect: <span class="string">'mysql'</span>,    <span class="comment">//数据库类型</span></span><br><span class="line">    host: <span class="string">'127.0.0.1'</span>,   <span class="comment">//主机地址</span></span><br><span class="line">    port: <span class="string">"3306"</span>,</span><br><span class="line">    pool: &#123;      <span class="comment">//连接池设置</span></span><br><span class="line">        max: <span class="number">5</span>,  <span class="comment">//最大连接数</span></span><br><span class="line">        idle: <span class="number">30000</span>,</span><br><span class="line">        acquire: <span class="number">60000</span></span><br><span class="line">    &#125;,</span><br><span class="line">    dialectOptions:&#123;</span><br><span class="line">        charset:<span class="string">'utf8mb4'</span>,  <span class="comment">//字符集</span></span><br><span class="line">        collate:<span class="string">'utf8mb4_unicode_ci'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    define: &#123;   <span class="comment">//模型设置</span></span><br><span class="line">        freezeTableName:<span class="literal">true</span>,    <span class="comment">//自定义表面，不设置会自动将表面转为复数形式</span></span><br><span class="line">        timestamps:<span class="literal">false</span>    <span class="comment">//自动生成更新时间，updatedAd,createdAd</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://sequelize.org/v5/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor" target="_blank" rel="noopener">其他设置可以到官方文档查看</a></p>
-<h3 id="测试连接"><a href="#测试连接" class="headerlink" title="测试连接"></a>测试连接</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db.authenticate().then(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"数据库已连接！"</span>)</span><br><span class="line">&#125;).catch(<span class="function"><span class="params">err</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err)</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"连接失败"</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>此时运行程序，就可以看到：</p>
-<p><img src="/2020/04/28/Sequelize01/1588126048889.png" alt="test"></p>
-<p>数据库连接成功！</p>
-<p>下一篇写模型定义</p>
-
-          
+          Sequelize简介
+ Sequelize是一款基于Nodejs功能强大的异步ORM框架。
+ ORM：Object-Relational Mapping，把关系数据库的表结构映射到对象上，通过面向对象的方式操作数据库
+ 同时支持PostgreSQL, MySQL, SQLite and MSSQL
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/04/28/Sequelize01/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
