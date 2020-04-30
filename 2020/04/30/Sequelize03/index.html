@@ -119,7 +119,7 @@
 <meta property="og:description" content="上一篇博客讲了Sequelize建立模型 这篇博客将介绍Sequelize对数据表增删改查以及建立关联  前期准备建立模型12345678910111213141516171819202122232425262728db.define(&#39;user&#39;, &amp;#123;    id: &amp;#123;        type: Sequelize.INTEGER,        primaryKey: t">
 <meta property="og:image" content="http://yoursite.com/2020/04/30/Sequelize03/01.png">
 <meta property="article:published_time" content="2020-04-30T05:09:36.000Z">
-<meta property="article:modified_time" content="2020-04-30T13:22:26.094Z">
+<meta property="article:modified_time" content="2020-04-30T13:30:22.334Z">
 <meta property="article:author" content="LSH">
 <meta property="article:tag" content="Sequelize">
 <meta property="article:tag" content="mysql">
@@ -454,7 +454,7 @@
 <h2 id="二、建立关联"><a href="#二、建立关联" class="headerlink" title="二、建立关联"></a>二、建立关联</h2><h4 id="🔥-一对一关联-hasOne-amp-amp-belongsTo"><a href="#🔥-一对一关联-hasOne-amp-amp-belongsTo" class="headerlink" title="🔥 一对一关联 (hasOne &amp;&amp; belongsTo)"></a>🔥 一对一关联 (hasOne &amp;&amp; belongsTo)</h4><p>Sequelize中，将调用关联方法的模型成为源模型（<strong>source model</strong>）而作为参数传入关联方法的模型称为目标模型(<strong>target model</strong>)</p>
 <h5 id="hasOne-在target-model上建立一对一关联"><a href="#hasOne-在target-model上建立一对一关联" class="headerlink" title="hasOne()在target model上建立一对一关联"></a>hasOne()在target model上建立一对一关联</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User.hasOne(UserInfo)</span><br></pre></td></tr></table></figure>
 <p>⭕ 上述代码作用下，hasOne将向UserInfo将以原型中userId属性作为外键，若通过sync()方法自动建表，会自动生成该属性。而如果表已存在，但没有userId属性，则会报错。<br>数据表启用<code>underscore:true</code>,则<code>userId</code>会被设置为<code>user_id</code>的形式</p>
-<p>⭕ 如果我们以及建立了数据表，且希望以某一个字段作为外键，可以通过<code>foreignKey</code>属性进行设置</p>
+<p>⭕ 如果我们已经建立了数据表，且希望以某一个字段作为外键，可以通过<code>foreignKey</code>属性进行设置</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User.hasOne( UserInfo, &#123; <span class="attr">foreignKey</span>: <span class="string">'custom_id'</span> &#125; )    <span class="comment">//custom_id表示自定义id</span></span><br></pre></td></tr></table></figure>
 
 <p>⭕ 如果我们需要在后面的关联查询中，为关联到的数据对象起一个别名，可以通过<code>as</code>属性设置<br>若没有使用<code>as</code>，sequelize默认查询到的关联对象为我们在使用<code>define()</code>函数定义时的第一个参数。</p>
