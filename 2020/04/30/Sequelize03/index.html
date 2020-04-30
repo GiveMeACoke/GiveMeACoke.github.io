@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Sequelize,mysql,nodejs," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="上一篇博客讲了Sequelize建立模型 这篇博客将介绍Sequelize对数据表增删改查以及建立关联  前期准备建立模型12345678910111213141516171819202122232425262728db.define(&#39;user&#39;, &amp;#123;    id: &amp;#123;        type: Sequelize.INTEGER,        primaryKey: t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sequelize对数据表增删改查、建立关联">
+<meta property="og:url" content="http://yoursite.com/2020/04/30/Sequelize03/index.html">
+<meta property="og:site_name" content="来瓶Kuo乐">
+<meta property="og:description" content="上一篇博客讲了Sequelize建立模型 这篇博客将介绍Sequelize对数据表增删改查以及建立关联  前期准备建立模型12345678910111213141516171819202122232425262728db.define(&#39;user&#39;, &amp;#123;    id: &amp;#123;        type: Sequelize.INTEGER,        primaryKey: t">
+<meta property="og:image" content="http://yoursite.com/2020/04/30/Sequelize03/01.png">
+<meta property="article:published_time" content="2020-04-30T05:09:36.000Z">
+<meta property="article:modified_time" content="2020-04-30T13:22:26.094Z">
+<meta property="article:author" content="LSH">
+<meta property="article:tag" content="Sequelize">
+<meta property="article:tag" content="mysql">
+<meta property="article:tag" content="nodejs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/04/30/Sequelize03/01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/30/Sequelize03/"/>
+
+
+
+
+
+  <title>Sequelize对数据表增删改查、建立关联 | 来瓶Kuo乐</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">来瓶Kuo乐</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/30/Sequelize03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LSH">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="来瓶Kuo乐">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Sequelize对数据表增删改查、建立关联</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-30T13:09:36+08:00">
+                2020-04-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Sequelize%E5%A4%87%E5%BF%98%E5%BD%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Sequelize备忘录</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ul>
+<li>上一篇博客讲了Sequelize建立模型</li>
+<li>这篇博客将介绍Sequelize对数据表增删改查以及建立关联</li>
+</ul>
+<h2 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h2><h3 id="建立模型"><a href="#建立模型" class="headerlink" title="建立模型"></a>建立模型</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">db.define(<span class="string">'user'</span>, &#123;</span><br><span class="line">    id: &#123;</span><br><span class="line">        type: Sequelize.INTEGER,</span><br><span class="line">        primaryKey: <span class="literal">true</span>    <span class="comment">//标识主键</span></span><br><span class="line">    &#125;,</span><br><span class="line">    userName:&#123;</span><br><span class="line">        type:Sequelize.STRING,</span><br><span class="line">        Unique:<span class="literal">true</span>,    <span class="comment">//是否具有唯一性</span></span><br><span class="line">        allowedNull:<span class="literal">false</span>   <span class="comment">//是否允许为空</span></span><br><span class="line">    &#125;,</span><br><span class="line">    password:&#123;</span><br><span class="line">        type:Sequelize.STRING,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">db.define(<span class="string">'userInfo'</span>, &#123;</span><br><span class="line">    id: &#123;</span><br><span class="line">        type: Sequelize.INTEGER,</span><br><span class="line">        primaryKey: <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    name:&#123;</span><br><span class="line">        type:Sequelize.STRING,</span><br><span class="line">        allowedNull:<span class="literal">false</span></span><br><span class="line">    &#125;,</span><br><span class="line">    tel:&#123;</span><br><span class="line">        type:Sequelize.STRING(<span class="number">11</span>),  <span class="comment">//规定长度</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="一、对数据表进行操作"><a href="#一、对数据表进行操作" class="headerlink" title="一、对数据表进行操作"></a>一、对数据表进行操作</h2><h3 id="模型方法"><a href="#模型方法" class="headerlink" title="模型方法"></a>模型方法</h3><h4 id="1-新增数据"><a href="#1-新增数据" class="headerlink" title="1.新增数据"></a>1.新增数据</h4><p> 🚩使用<code>create()</code>函数进行mysql插入数据操作</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> newUser = <span class="keyword">await</span> User.create(&#123;</span><br><span class="line">        userName: <span class="string">'lsh'</span>,</span><br><span class="line">        password: <span class="string">'123456'</span></span><br><span class="line">    &#125;)</span><br><span class="line"><span class="comment">//返回新添加的数据</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"id"</span>: <span class="number">1</span>,</span><br><span class="line">  <span class="string">"userName"</span>: <span class="string">"lsh"</span>,</span><br><span class="line">  <span class="string">"password"</span>: <span class="string">"123456"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 🚩使用<code>findOrCreate()</code>函数查找某条数据，若找不到则插入新数据</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> newUser = <span class="keyword">await</span> User.findOrCreate(&#123;</span><br><span class="line">       where:&#123;</span><br><span class="line">        userName: <span class="string">'admin'</span>,</span><br><span class="line">        password: <span class="string">'123456'</span></span><br><span class="line">       &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"><span class="comment">//返回查到或新插入的记录</span></span><br><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">"id"</span>: <span class="number">2</span>,</span><br><span class="line">    <span class="string">"userName"</span>: <span class="string">"admin"</span>,</span><br><span class="line">    <span class="string">"password"</span>: <span class="string">"123456"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="literal">true</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-查找记录"><a href="#2-查找记录" class="headerlink" title="2.查找记录"></a>2.查找记录</h4><p>🚩 使用<code>findByPk()</code>通过主键id查找记录</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> user = <span class="keyword">await</span> User.findByPk(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>🚩 使用<code>findOne()</code>查找一条记录</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查找id为1第一条记录</span></span><br><span class="line"><span class="keyword">let</span> user = <span class="keyword">await</span> User.findOne( &#123; <span class="attr">where</span>: &#123; <span class="attr">id</span>: <span class="number">1</span> &#125; &#125; )</span><br></pre></td></tr></table></figure>
+<p>🚩 使用<code>findAll()</code>查找数据表中的所有记录</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> users = <span class="keyword">await</span> User.findAll()</span><br></pre></td></tr></table></figure>
+<p>🚩 使用<code>findAndCountAll()</code>查找数据表中所有记录，并统计记录数量</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> users = <span class="keyword">await</span> User.findAndCountAll</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-更新记录update"><a href="#3-更新记录update" class="headerlink" title="3.更新记录update()"></a>3.更新记录<code>update()</code></h4><p>🚩 使用<code>update()</code>方法更新某条记录</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//更新userName为admin 的记录的userName为test</span></span><br><span class="line"><span class="keyword">let</span> result = <span class="keyword">await</span> User.update(&#123;<span class="attr">userName</span>:<span class="string">'test'</span>&#125;,&#123;<span class="attr">where</span>:&#123;<span class="attr">userName</span>:<span class="string">'admin'</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//更新成功返回[1]</span></span><br><span class="line"><span class="comment">//更新失败返回[0]</span></span><br></pre></td></tr></table></figure>
+<p>🚩 <a href="#update">还可以通过实例方法来更新数据，下面会讲到</a></p>
+<h4 id="4-删除记录destroy"><a href="#4-删除记录destroy" class="headerlink" title="4.删除记录destroy()"></a>4.删除记录<code>destroy()</code></h4><p>🚩 使用<code>destroy()</code>方法删除某条记录</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> result = <span class="keyword">await</span> User.destroy(&#123;<span class="attr">userName</span>:<span class="string">'test'</span>)</span><br><span class="line"><span class="comment">//删除成功返回1</span></span><br><span class="line"><span class="comment">//删除失败返回0</span></span><br></pre></td></tr></table></figure>
+<p>🚩 <a href="#destroy">还可以通过实例方法来删除数据，下面会讲到</a></p>
+<h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><h4 id="1-使用实例方法update-方法更新数据"><a href="#1-使用实例方法update-方法更新数据" class="headerlink" title="1.使用实例方法update()方法更新数据"></a><a id="update">1</a>.使用实例方法<code>update()</code>方法更新数据</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> user = <span class="keyword">await</span> findByPk(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">await</span> user.update(&#123;<span class="attr">userName</span>:<span class="string">'test'</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-使用实例方法destroy-方法删除数据"><a href="#2-使用实例方法destroy-方法删除数据" class="headerlink" title="2.使用实例方法destroy()方法删除数据"></a><a id="destroy">2</a>.使用实例方法<code>destroy()</code>方法删除数据</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> user = <span class="keyword">await</span> findByPk(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">await</span> user.destroy()</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、建立关联"><a href="#二、建立关联" class="headerlink" title="二、建立关联"></a>二、建立关联</h2><h4 id="🔥-一对一关联-hasOne-amp-amp-belongsTo"><a href="#🔥-一对一关联-hasOne-amp-amp-belongsTo" class="headerlink" title="🔥 一对一关联 (hasOne &amp;&amp; belongsTo)"></a>🔥 一对一关联 (hasOne &amp;&amp; belongsTo)</h4><p>Sequelize中，将调用关联方法的模型成为源模型（<strong>source model</strong>）而作为参数传入关联方法的模型称为目标模型(<strong>target model</strong>)</p>
+<h5 id="hasOne-在target-model上建立一对一关联"><a href="#hasOne-在target-model上建立一对一关联" class="headerlink" title="hasOne()在target model上建立一对一关联"></a>hasOne()在target model上建立一对一关联</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User.hasOne(UserInfo)</span><br></pre></td></tr></table></figure>
+<p>⭕ 上述代码作用下，hasOne将向UserInfo将以原型中userId属性作为外键，若通过sync()方法自动建表，会自动生成该属性。而如果表已存在，但没有userId属性，则会报错。<br>数据表启用<code>underscore:true</code>,则<code>userId</code>会被设置为<code>user_id</code>的形式</p>
+<p>⭕ 如果我们以及建立了数据表，且希望以某一个字段作为外键，可以通过<code>foreignKey</code>属性进行设置</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User.hasOne( UserInfo, &#123; <span class="attr">foreignKey</span>: <span class="string">'custom_id'</span> &#125; )    <span class="comment">//custom_id表示自定义id</span></span><br></pre></td></tr></table></figure>
+
+<p>⭕ 如果我们需要在后面的关联查询中，为关联到的数据对象起一个别名，可以通过<code>as</code>属性设置<br>若没有使用<code>as</code>，sequelize默认查询到的关联对象为我们在使用<code>define()</code>函数定义时的第一个参数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User.hasOne(UserInfo, &#123; <span class="attr">as</span>: <span class="string">' info '</span> &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>⭕ 还可以通过设置<code>foreignKey</code>和设置别名的方式关联同一张表多次，或者关联自身:</p>
+<p>比如，我们有一个活动表（Activity）和一张用户表（User）来代表有关校园活动的业务，活动表上有两个外键分别是<code>teacher_id</code>和<code>student_id</code>，分别表示负责该活动的老师和学生，且都关联在一张User表上。此时我们可以这样定义:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Activity.hasOne( User, &#123; <span class="attr">as</span>:<span class="string">"teacher"</span>, <span class="attr">foreignKey</span>:<span class="string">"teacher_id"</span> &#125; )</span><br><span class="line">Activity.hasOne( User, &#123; <span class="attr">as</span>:<span class="string">"student"</span>, <span class="attr">foreignKey</span>:<span class="string">"student_id"</span> &#125; )</span><br><span class="line">User.belongsTo( Activity );</span><br></pre></td></tr></table></figure>
+
+<p>再比如，我们有一个人类表（Person），我们需要在该表上设置关联表示父子关系：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person.hasOne( Person, &#123; <span class="attr">as</span>: <span class="string">'father'</span>, <span class="attr">foreignKey</span>: <span class="string">'father_id'</span> &#125; )</span><br></pre></td></tr></table></figure>
+<p>⭕ 当我们设置了hasOne关联之后，Sequelize会为源表添加<code>set</code>和<code>get</code>方法，以User和UserInfo为例，建立关联后，将为User实例添加<code>setUserInfo()</code>和<code>getUserInfo</code>方法。<br><code>set</code>和<code>get</code>后面的内容却决于<code>as</code>所起别名，若没有设置，则默认为<code>define()</code>方法的第一个参数</p>
+<p>采取sequelize.sync()自动见表后：<br><img src="/2020/04/30/Sequelize03/01.png" alt="userInfo表"><br>可以看到userInfo表自动生成一个userId字段用于关联User表</p>
+<h5 id="belongsTo-在source-model上建立一对一关联："><a href="#belongsTo-在source-model上建立一对一关联：" class="headerlink" title="belongsTo()在source model上建立一对一关联："></a>belongsTo()在source model上建立一对一关联：</h5><p>官方提供了一个简单的例子来说明belongsTo的用法：<br>假设有两个表（Player和Team）表示队员与队伍之间的关系，一个队员只能属于一个队伍</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Player = <span class="keyword">this</span>.sequelize.define(<span class="string">'player'</span>, &#123;<span class="comment">/* attributes */</span>&#125;);</span><br><span class="line"><span class="keyword">const</span> Team  = <span class="keyword">this</span>.sequelize.define(<span class="string">'team'</span>, &#123;<span class="comment">/* attributes */</span>&#125;);</span><br><span class="line">Player.belongsTo(Team); <span class="comment">// 将向 Player 添加一个 teamId 属性以保存 Team 的主键值</span></span><br></pre></td></tr></table></figure>
+<p>🌈 其余用法与hasOne一直，这里不多做赘述</p>
+<h5 id="hasOne与belongsTo的区别"><a href="#hasOne与belongsTo的区别" class="headerlink" title="hasOne与belongsTo的区别"></a>hasOne与belongsTo的区别</h5><p>在我的理解上，hasOne用来表示 <strong>“拥有”</strong> 的一对一关系，比如一个用户拥有一条用户信息<br>而belongsTo用来表示 <strong>“属于”</strong> 的一对一关系，正如一个队员属于一个团队</p>
+<p>还有就是外键设置的不同：</p>
+<ul>
+<li>hasOne将外键设置在 <strong>target model</strong> 上</li>
+<li>belongsTo将外键设置在 <strong>source model</strong>上</li>
+</ul>
+<h4 id="🔥-一对多关联-hasMany"><a href="#🔥-一对多关联-hasMany" class="headerlink" title="🔥 一对多关联(hasMany)"></a>🔥 一对多关联(hasMany)</h4><p>Sequelize一对多关联，将一个源（<strong>source</strong>）和多个目标（<strong>target</strong>）关联在一起<br>例如：我们需要建立用户表(user)和订单(order)表之间的联系<br>    一个用户可以拥有多个订单</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> User = sequelize.define(<span class="string">'user'</span>, &#123;<span class="comment">/* ... */</span>&#125;)</span><br><span class="line"><span class="keyword">const</span> Order = sequelize.define(<span class="string">'order'</span>, &#123;<span class="comment">/* ... */</span>&#125;)</span><br><span class="line">User.hasMany(Order, &#123;<span class="attr">as</span>: <span class="string">'orders'</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>当我们需要指定用户连接订单的外键时，可以通过<code>sourceKey</code>属性进行设置，比如通过用户名<code>name</code>建立关联:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> User = sequelize.define(<span class="string">'user'</span>, &#123;<span class="attr">name</span>: &#123; <span class="attr">type</span>: Sequelize.STRING, <span class="attr">unique</span>: <span class="literal">true</span> &#125; &#125;)</span><br><span class="line"><span class="keyword">const</span> Order = sequelize.define(<span class="string">'order'</span>, &#123;<span class="attr">userName</span>: Sequelize.STRING&#125;)</span><br><span class="line">User.hasMany(Order, &#123;<span class="attr">as</span>: <span class="string">'orders'</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>🌈 这里需要注意的时，作为外键的字段若不是主键，必须设置唯一性约束unique<br>🌈 当建立联系后，Sequelize会为源表添加<code>set</code>、<code>get</code>、<code>add</code>方法，在这个例子里，建立关联后，将为User实例添加<code>setOrders()</code>、<code>getOrders()</code>、<code>addOrder()</code>、<code>addOrders()</code>方法。<br><code>set</code>、<code>get</code>、<code>add</code>后面的内容却决于<code>as</code>所起别名，若没有设置，则默认为<code>define()</code>方法的第一个参数的复数形式</p>
+<h4 id="🔥-多对多关联-belongsToMany"><a href="#🔥-多对多关联-belongsToMany" class="headerlink" title="🔥 多对多关联(belongsToMany)"></a>🔥 多对多关联(belongsToMany)</h4><p>多对多关联将源和多个目标关联，同时目标也可以连接多个源<br>例如：我们有用户表User与角色表Role两张表，需要建立多对多关系：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">User.belongsToMany(Role, &#123;<span class="attr">through</span>: <span class="string">'userRole'</span>&#125;);</span><br><span class="line">Role.belongsToMany(User, &#123;<span class="attr">through</span>: <span class="string">'userRole'</span>&#125;);</span><br></pre></td></tr></table></figure>
+<p>⭕ 由于多对多关系需要借助一张中间表，<code>through</code>属性值的就是这个中间表的表名<br>同样的，我们也可以使用<code>as</code>来为关联的目标表其别名</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">User.belongsToMany(Role, &#123;<span class="attr">as</span>:<span class="string">"userRoles"</span>, <span class="attr">through</span>: <span class="string">'userRole'</span>&#125;);</span><br><span class="line">Role.belongsToMany(User, &#123;<span class="attr">as</span>:<span class="string">"users"</span>, <span class="attr">through</span>: <span class="string">'userRole'</span>&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>⭕ 当建立联系后，Sequelize会为源表将添加方法 <code>getUsers</code>, <code>setUsers</code>, <code>addUser</code>,<code>addUsers</code> 到 Role表, 还有 <code>getRoles</code>, <code>setRoles</code>, <code>addRole</code>, 和 <code>addRoles</code> 到 User表.</p>
+<p>⭕ 同样可以使用belongsToMany来进行自我关联</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Person.belongsToMany(Person, &#123; <span class="attr">as</span>: <span class="string">'Children'</span>, <span class="attr">through</span>: <span class="string">'PersonChildren'</span> &#125;)</span><br><span class="line"><span class="comment">// 这将创建存储对象的 ID 的表 PersonChildren。</span></span><br></pre></td></tr></table></figure>
+
+<p>⭕ <code>foreignKey</code> 将允许你在 through 关系中设置 source model 键。<br>⭕ <code>otherKey</code> 将允许你在 through 关系中设置 target model 键。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User.belongsToMany(Project, &#123; <span class="attr">as</span>: <span class="string">'Tasks'</span>, <span class="attr">through</span>: <span class="string">'worker_tasks'</span>, <span class="attr">foreignKey</span>: <span class="string">'userId'</span>, <span class="attr">otherKey</span>: <span class="string">'projectId'</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>目前我所用到的关联操作就这些，官网还有很多用法， 等用到的时候再回来补充。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Sequelize/" rel="tag"># Sequelize</a>
+          
+            <a href="/tags/mysql/" rel="tag"># mysql</a>
+          
+            <a href="/tags/nodejs/" rel="tag"># nodejs</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/29/Sequelize02/" rel="next" title="Sequelize模型定义">
+                <i class="fa fa-chevron-left"></i> Sequelize模型定义
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.jpg"
+                alt="LSH" />
+            
+              <p class="site-author-name" itemprop="name">LSH</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前期准备"><span class="nav-number">1.</span> <span class="nav-text">前期准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建立模型"><span class="nav-number">1.1.</span> <span class="nav-text">建立模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、对数据表进行操作"><span class="nav-number">2.</span> <span class="nav-text">一、对数据表进行操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型方法"><span class="nav-number">2.1.</span> <span class="nav-text">模型方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-新增数据"><span class="nav-number">2.1.1.</span> <span class="nav-text">1.新增数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-查找记录"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.查找记录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-更新记录update"><span class="nav-number">2.1.3.</span> <span class="nav-text">3.更新记录update()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-删除记录destroy"><span class="nav-number">2.1.4.</span> <span class="nav-text">4.删除记录destroy()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例方法"><span class="nav-number">2.2.</span> <span class="nav-text">实例方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-使用实例方法update-方法更新数据"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.使用实例方法update()方法更新数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-使用实例方法destroy-方法删除数据"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.使用实例方法destroy()方法删除数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、建立关联"><span class="nav-number">3.</span> <span class="nav-text">二、建立关联</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#🔥-一对一关联-hasOne-amp-amp-belongsTo"><span class="nav-number">3.0.1.</span> <span class="nav-text">🔥 一对一关联 (hasOne &amp;&amp; belongsTo)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#hasOne-在target-model上建立一对一关联"><span class="nav-number">3.0.1.1.</span> <span class="nav-text">hasOne()在target model上建立一对一关联</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#belongsTo-在source-model上建立一对一关联："><span class="nav-number">3.0.1.2.</span> <span class="nav-text">belongsTo()在source model上建立一对一关联：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#hasOne与belongsTo的区别"><span class="nav-number">3.0.1.3.</span> <span class="nav-text">hasOne与belongsTo的区别</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#🔥-一对多关联-hasMany"><span class="nav-number">3.0.2.</span> <span class="nav-text">🔥 一对多关联(hasMany)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#🔥-多对多关联-belongsToMany"><span class="nav-number">3.0.3.</span> <span class="nav-text">🔥 多对多关联(belongsToMany)</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LSH</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
